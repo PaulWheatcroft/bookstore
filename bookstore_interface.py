@@ -70,7 +70,14 @@ def update_book(conn, book):
 
 def delete_book(conn, id):
     # Implement the logic to delete a book from the database
-    pass
+    try:
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM books WHERE ISBN = ?", (id,))
+        conn.commit()
+        return cursor
+    except Error as e:
+        print(e)
+        return None
 
 
 def main():
@@ -152,8 +159,15 @@ def main():
             print("Book updated successfully")
         elif choice == "4":
             # Logic to delete a book
-            print("Exiting the Bookstore Interface")
-            break
+            isbn = input("Enter the ISBN of the book: ")
+            confirmation = input(
+                "Are you sure you want to delete the book? (yes/no): "
+            )
+            if confirmation.lower() == "yes":
+                delete_book(conn, isbn)
+                print("Book deleted successfully")
+            else:
+                print("Delete canceled")
         elif choice == "5":
             print("Exiting the Bookstore Interface")
             break
