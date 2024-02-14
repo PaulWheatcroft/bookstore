@@ -45,8 +45,27 @@ def read_books(conn):
 
 
 def update_book(conn, book):
-    # Implement the logic to update a book in the database
-    pass
+    try:
+        print('update_book', book)
+        cursor = conn.cursor()
+        cursor.execute(
+            """UPDATE books
+            SET title = ?, author = ?, year = ?, stock = ?, price = ?
+            WHERE ISBN = ?""",
+            (
+                book['title'],
+                book['author'],
+                book['year'],
+                book['stock'],
+                book['price'],
+                book['ISBN'],
+            ),
+        )
+        conn.commit()
+        return cursor
+    except Error as e:
+        print(e)
+        return None
 
 
 def delete_book(conn, id):
@@ -57,13 +76,15 @@ def delete_book(conn, id):
 def main():
     print("Welcome to the Bookstore Interface")
     while True:
-        print(Fore.BLUE + "Select an option:")
+        print(Fore.LIGHTWHITE_EX + "Select an option:")
+        print(Fore.LIGHTYELLOW_EX + "=================================")
         print(Fore.YELLOW + "1. Create a book")
         print(Fore.YELLOW + "2. Read books")
         print(Fore.YELLOW + "3. Update a book")
         print(Fore.YELLOW + "4. Delete a book")
         print(Fore.RED + "5. Exit")
-        choice = input(Fore.BLUE + "Enter your choice: ")
+        print(Fore.LIGHTYELLOW_EX + "=================================")
+        choice = input(Fore.LIGHTWHITE_EX + "Enter your choice: ")
 
         if choice == "1":
             # Logic to create a book
@@ -91,8 +112,44 @@ def main():
             read_books(conn)
         elif choice == "3":
             # Logic to update a book
-            print("Exiting the Bookstore Interface")
-            break
+            # get a book title based on ISBN
+            def get_book(isbn):
+                cursor = conn.cursor()
+                cursor.execute("SELECT * FROM books WHERE ISBN = ?", (isbn,))
+                book = cursor.fetchone()
+                print('get_book', book)
+                if book:
+                    book_dict = {
+                        'ISBN': book[5],
+                        'title': book[0],
+                        'author': book[1],
+                        'year': book[2],
+                        'stock': book[3],
+                        'price': book[4],
+                    }
+                    return book_dict
+                else:
+                    return None
+
+            book = get_book(input("Enter the ISBN of the book: "))
+
+            print(Fore.GREEN + str(book))
+
+            if not book:
+                print("Book not found")
+                return
+
+            updated_book = {
+                'ISBN': book['ISBN'],
+                'title': input("Enter the title of the book: "),
+                'author': input("Enter the author of the book: "),
+                'year': input("Enter the year of publication: "),
+                'stock': input("Enter the number of copies: "),
+                'price': input("Enter the price of the book: "),
+            }
+
+            update_book(conn, updated_book)
+            print("Book updated successfully")
         elif choice == "4":
             # Logic to delete a book
             print("Exiting the Bookstore Interface")
