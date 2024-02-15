@@ -4,8 +4,6 @@ from colorama import Fore, Style
 
 conn = sqlite3.connect("bookstore.db")
 
-print("****", conn)
-
 
 def create_book(conn, book):
     # Implement the logic to insert a new book into the database
@@ -81,16 +79,23 @@ def delete_book(conn, id):
 
 
 def main():
-    print("Welcome to the Bookstore Interface")
+    print(Fore.MAGENTA + Style.BRIGHT + "**********************************")
+    print(Fore.MAGENTA + "Welcome to the Bookstore Interface")
+    print(
+        Fore.MAGENTA
+        + Style.BRIGHT
+        + "**********************************"
+        + Style.RESET_ALL
+    )
     while True:
         print(Fore.LIGHTWHITE_EX + "Select an option:")
-        print(Fore.LIGHTYELLOW_EX + "=================================")
+        print(Fore.LIGHTYELLOW_EX + "==================================")
         print(Fore.YELLOW + "1. Create a book")
         print(Fore.YELLOW + "2. Read books")
         print(Fore.YELLOW + "3. Update a book")
         print(Fore.YELLOW + "4. Delete a book")
         print(Fore.RED + "5. Exit")
-        print(Fore.LIGHTYELLOW_EX + "=================================")
+        print(Fore.LIGHTYELLOW_EX + "==================================")
         choice = input(Fore.LIGHTWHITE_EX + "Enter your choice: ")
 
         if choice == "1":
@@ -107,7 +112,12 @@ def main():
             cursor = create_book(conn, book)
 
             if cursor:
-                print("Book created successfully")
+                print(
+                    Fore.GREEN
+                    + Style.BRIGHT
+                    + "Book created successfully"
+                    + Style.RESET_ALL
+                )
                 for row in cursor:
                     print(row)
             else:
