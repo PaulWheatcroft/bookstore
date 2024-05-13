@@ -8,23 +8,26 @@ conn = sqlite3.connect("bookstore.db")
 def create_book(conn, book):
     # Implement the logic to insert a new book into the database
     try:
-        cursor = conn.cursor()
-        cursor.execute(
-            """INSERT INTO books (ISBN, title, author, year, stock, price)
-            VALUES (?, ?, ?, ?, ?, ?)""",
-            (
-                book['ISBN'],
-                book['title'],
-                book['author'],
-                book['year'],
-                book['stock'],
-                book['price'],
-            ),
-        )
-        conn.commit()
-        return cursor
-    except Error as e:
-        print(e)
+        with conn:
+            cursor = conn.cursor()
+            cursor.execute(
+                """INSERT INTO books (ISBN, title, author, year, stock, price)
+                VALUES (?, ?, ?, ?, ?, ?)""",
+                (
+                    book['ISBN'],
+                    book['title'],
+                    book['author'],
+                    book['year'],
+                    book['stock'],
+                    book['price'],
+                ),
+            )
+            return cursor
+    except sqlite3.Error as e:
+        print(f"Database error: {e}")
+        return None
+    except KeyError as e:
+        print(f"Missing data error: {e}")
         return None
 
 
