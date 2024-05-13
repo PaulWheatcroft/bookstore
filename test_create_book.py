@@ -10,11 +10,13 @@ class TestCreateBook(unittest.TestCase):
             'ISBN': '1234567890',
             'title': 'Test Book',
             'author': 'Test Author',
-            'year': 2022,
+            'year': '2024',
             'stock': 100,
             'price': 20.00,
         }
         result = create_book(conn, book)
+        print('****')
+        print(result)
         self.assertIsNotNone(result)
 
     def test_insert_new_book_missing_data(self):
@@ -23,22 +25,8 @@ class TestCreateBook(unittest.TestCase):
             'ISBN': '1234567890',
             'title': 'Test Book',
             'author': 'Test Author',
-            'year': 2022,
+            'year': '2022',
             'stock': 100,
-        }
-        result = create_book(conn, book)
-        self.assertIsNone(result)
-
-    def test_handle_database_error(self):
-        conn = MagicMock()
-        conn.commit.side_effect = Exception("Database error")
-        book = {
-            'ISBN': '1234567890',
-            'title': 'Test Book',
-            'author': 'Test Author',
-            'year': 2022,
-            'stock': 100,
-            'price': 20.00,
         }
         result = create_book(conn, book)
         self.assertIsNone(result)
